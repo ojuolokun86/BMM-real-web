@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <canvas id="matrix"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<script type="module">
+import { showHackerTransition } from './hacker-transition.js';
+
+// Intercept all <a> clicks (except for #, mailto, tel, or _blank)
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href]').forEach(link => {
+        const url = link.getAttribute('href');
+        if (
+            url.startsWith('#') ||
+            url.startsWith('mailto:') ||
+            url.startsWith('tel:') ||
+            link.target === '_blank'
+        ) return;
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            showHackerTransition(url);
+        });
+    });
+});
+</script>
+<body>
+    <div class="container">
+        <div id="hackerTransition" style="display:none;">
+  <canvas id="hackerTransitionCanvas"></canvas>
+</div>
+        <!-- Header Section -->
+        <header class="dashboard-header">
+            <div class="logo-title-group">
+                <img src="./image/TECHITOON BOT_ Evolving Intelligence 2.png" alt="Logo" class="logo">
+                <div class="title-group">
+                    <h1 class="main-title">BMM</h1>
+                    <h2 class="subtitle">TECHITOON BOT</h2>
+                </div>
+            </div>
+            <a href="index.html" class="btn-primary logout-btn">Logout</a>
+        </header>
+
+        <div id="notificationMessage"></div>
+        <!-- Notification History -->
+        <section id="notificationSection">
+            <h2>Notifications</h2>
+            <ul id="notificationHistory" class="scrollable-list">
+                <!-- Notification messages will be dynamically added here -->
+            </ul>
+            <!-- Move the user summary here -->
+            <p id="userGreeting" class="greeting"></p>
+        </section>
+
+        <section id="complaintSection">
+            <h2>Submit a Complaint</h2>
+            <textarea id="complaintInput" placeholder="Enter your complaint..."></textarea>
+            <button id="submitComplaintButton" class="btn-primary">Submit Complaint</button>
+        </section>
+        <section id="subscriptionSection">
+            <h2>Subscription</h2>
+            <p id="subscriptionDetails">
+            Subscription Level: <span id="subscriptionLevel" class="subscription-badge">N/A</span>,
+            Days Left: <span id="daysLeft">N/A</span>
+            </p>
+                <form id="tokenInputForm">
+                <label for="tokenInput">Enter Token ID:</label>
+                <input type="text" id="tokenInput" placeholder="Enter your token ID" required>
+                <button type="submit" class="btn-primary">Submit Token</button>
+            </form>
+            <p id="tokenResponseMessage" class="message"></p>
+        </section>
+        <a href="bot-menu.html" class="btn-primary">View Bot Command Menu</a>
+        <!-- Bot Info Section -->
+       <section id="botInfoSection">
+                <h2>Your Bot Info</h2>
+                <small style="color:#aaa;display:block;margin-bottom:6px;">Scroll right to see all actions &rarr;</small>
+                <div class="table-responsive">
+                    <table id="botInfoTable">
+                        <thead>
+                            <tr>
+                                <th>Phone Number</th>
+                                <th>Status</th>
+                                <th>CPU Usage (%)</th>
+                                <th>Memory Usage (MB)</th>
+                                <th>Uptime</th>
+                                <th>Last Active</th>
+                                <th>Version</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Bot info will be dynamically added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        <!-- Activity Log Viewer -->
+        <section id="activityLogSection">
+            <h2>Recent Bot Activities</h2>
+            <ul id="activityLog" class="scrollable-list">
+                <!-- Recent activities will be dynamically added here -->
+            </ul>
+        </section>
+
+        <!-- Analytics Visualization -->
+        <section id="analyticsSection">
+            <h2>Performance Trends</h2>
+            <canvas id="performanceChart"></canvas>
+        </section>
+
+        </section>
+         <div class="container">
+            <button id="registerBotButton" class="btn-primary">Deploy BMM Bot</button>
+         </section>
+    </div>
+
+    <!-- Modals -->
+        <div id="confirmationModal" class="modal hidden">
+        <div class="modal-content">
+            <img src="./image/beyond.jpg" alt="Confirmation" style="width:100px;max-width:40vw;display:block;margin:0 auto 16px auto;">
+            <div id="modalMessage"></div>
+            <div style="margin-top:20px;">
+            <button id="confirmButton" class="btn-primary">Confirm</button>
+            <button id="cancelButton" class="btn-danger" style="margin-left:10px;">Cancel</button>
+            </div>
+        </div>
+        </div>
+
+    <!-- Account Management Section -->
+<section id="accountManagementSection">
+    <h2>Account Management</h2>
+    <button id="requestAccountDeletionButton" class="btn-danger">Request Account Deletion</button>
+</section>
+</div>
+<script src="dashboard.js" type="module"></script>
+<footer class="footer">
+    <div class="footer-content">
+        <h3>About Techitoon Bot</h3>
+        <p>
+            🤖 Techitoon Bot BMM is your all-in-one WhatsApp assistant for group control, automation, fun, and protection. 
+            Manage your community smarter and faster with ease.
+        </p>
+
+       <h2>📞 Contact</h2>
+        <p>Email: <a href="mailto:techitoon.ai@gmail.com">techitoon.ai@gmail.com</a></p>
+        <p>WhatsApp: +234 8026 977 793</p>
+
+        <h4>Quick Links</h4>
+        <ul>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+        <p style="margin-top:8px;">
+            See our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>.
+        </p>
+        <p class="copyright">
+            &copy; <span id="year"></span> Techitoon Team. All rights reserved.
+        </p>
+    </div>
+</footer>
+<script src="matrix.js"></script>
+</body>
+<script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</html>

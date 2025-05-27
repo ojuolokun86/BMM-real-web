@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Command Menu</title>
+    <link rel="stylesheet" href="styles.css">
+    <canvas id="matrix"></canvas>
+    <style>
+        .menu-section {
+            background: rgba(30, 30, 47, 0.97);
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(0,170,255,0.10);
+            padding: 28px 18px;
+            margin: 40px auto 32px auto;
+            max-width: 700px;
+            color: #e0e0e0;
+        }
+        .menu-section h2 {
+            color: #00aaff;
+            font-size: 2rem;
+            margin-bottom: 18px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .menu-block {
+            margin-bottom: 32px;
+            animation: fadeInUp 0.7s;
+        }
+        .menu-block-title {
+            color: #ffd700;
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-left: 4px solid #00aaff;
+            padding-left: 10px;
+            background: rgba(0,170,255,0.05);
+            border-radius: 4px;
+        }
+        .menu-list li {
+            margin-bottom: 10px;
+            font-size: 1.08rem;
+            line-height: 1.7;
+            transition: background 0.2s;
+            border-radius: 4px;
+            padding: 6px 8px;
+        }
+        .menu-list li:hover {
+            background: rgba(0,170,255,0.08);
+        }
+        .menu-command {
+            color: #00aaff;
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+            background: rgba(0,170,255,0.10);
+            border-radius: 3px;
+            padding: 2px 6px;
+        }
+        .menu-desc {
+            color: #b0b8c9;
+            margin-left: 10px;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        @media (max-width: 600px) {
+            .menu-section {
+                padding: 12px 4px;
+                max-width: 99%;
+            }
+            .menu-section h2 {
+                font-size: 1.2rem;
+            }
+            .menu-block-title {
+                font-size: 1rem;
+            }
+            .menu-list {
+                padding: 8px 6px;
+            }
+            .menu-list li {
+                font-size: 0.98rem;
+            }
+        }
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .logo-title-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid #00aaff;
+            background: #fff;
+        }
+        .main-title {
+            font-size: 1.5rem;
+            color: #00aaff;
+            margin: 0;
+        }
+        .subtitle {
+            font-size: 1rem;
+            color: #ffd700;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+        .logout-btn {
+            margin-left: auto;
+            background: #00aaff;
+            color: #fff;
+            border-radius: 6px;
+            padding: 8px 18px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .logout-btn:hover {
+            background: #0077cc;
+        }
+    </style>
+</head>
+<script type="module">
+import { showHackerTransition } from './hacker-transition.js';
+
+// Intercept all <a> clicks (except for #, mailto, tel, or _blank)
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href]').forEach(link => {
+        const url = link.getAttribute('href');
+        if (
+            url.startsWith('#') ||
+            url.startsWith('mailto:') ||
+            url.startsWith('tel:') ||
+            link.target === '_blank'
+        ) return;
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            showHackerTransition(url);
+        });
+    });
+});
+</script>
+<body>
+    <div class="container">
+        <div id="hackerTransition" style="display:none;">
+  <canvas id="hackerTransitionCanvas"></canvas>
+</div>
+        <header class="dashboard-header">
+            <div class="logo-title-group">
+                <img src="./image/TECHITOON BOT_ Evolving Intelligence 2.png" alt="Logo" class="logo">
+                <div>
+                    <h1 class="main-title">BMM</h1>
+                    <h2 class="subtitle">TECHITOON BOT</h2>
+                </div>
+            </div>
+            <a href="dashboard.html" class="logout-btn">Back to Dashboard</a>
+        </header>
+
+        <section class="menu-section">
+            <h2>🌟 Techitoon AI - Command Guide 🌟</h2>
+
+            <div class="menu-block">
+                <div class="menu-block-title">📌 GENERAL COMMANDS</div>
+                <ul class="menu-list">
+                    <li><span class="menu-command">menu</span> <span class="menu-desc">Show this menu</span></li>
+                    <li><span class="menu-command">info</span> <span class="menu-desc">Get bot information</span></li>
+                    <li><span class="menu-command">ping</span> <span class="menu-desc">Check bot responsiveness</span></li>
+                    <li><span class="menu-command">about</span> <span class="menu-desc">Learn about this bot</span></li>
+                    <li><span class="menu-command">restart</span> <span class="menu-desc">Restart the bot</span></li>
+                </ul>
+            </div>
+
+            <div class="menu-block">
+                <div class="menu-block-title">🎨 CUSTOMIZATION COMMANDS</div>
+                <ul class="menu-list">
+                    <li><span class="menu-command">prefix &lt;new_prefix&gt;</span> <span class="menu-desc">Change the command prefix</span></li>
+                    <li><span class="menu-command">tagformat</span> <span class="menu-desc">Toggle between formatted and plain tagall messages</span></li>
+                </ul>
+            </div>
+
+            <div class="menu-block">
+                <div class="menu-block-title">👥 GROUP COMMANDS</div>
+                <ul class="menu-list">
+                    <li><span class="menu-command">tagall &lt;message&gt;</span> <span class="menu-desc">Tag all members in a group</span></li>
+                    <li><span class="menu-command">setmode &lt;me/admin&gt;</span> <span class="menu-desc">Set the group mode</span></li>
+                    <li><span class="menu-command">antidelete on/off</span> <span class="menu-desc">Enable or disable antidelete</span></li>
+                    <li><span class="menu-command">warn @user &lt;reason&gt;</span> <span class="menu-desc">Warn a user</span></li>
+                    <li><span class="menu-command">resetwarn @user</span> <span class="menu-desc">Reset warnings for a user</span></li>
+                    <li><span class="menu-command">listwarn</span> <span class="menu-desc">List all warnings in the group</span></li>
+                    <li><span class="menu-command">warncount &lt;number&gt;</span> <span class="menu-desc">Set the warning threshold</span></li>
+                    <li><span class="menu-command">welcome on/off</span> <span class="menu-desc">Enable or disable welcome messages</span></li>
+                    <li><span class="menu-command">setwelcome &lt;message&gt;</span> <span class="menu-desc">Set a custom welcome message</span></li>
+                    <li><span class="menu-command">group info &lt;description&gt;</span> <span class="menu-desc">Update the group description</span></li>
+                    <li><span class="menu-command">group name &lt;new_name&gt;</span> <span class="menu-desc">Update the group name</span></li>
+                    <li><span class="menu-command">group pic</span> <span class="menu-desc">Update the group profile picture</span></li>
+                    <li><span class="menu-command">poll &lt;question&gt;\n&lt;option1&gt;\n&lt;option2&gt;</span> <span class="menu-desc">Create a poll</span></li>
+                    <li><span class="menu-command">endpoll</span> <span class="menu-desc">End the current poll</span></li>
+                    <li><span class="menu-command">kick &lt;@user&gt;</span> <span class="menu-desc">Remove a member from the group</span></li>
+                    <li><span class="menu-command">add &lt;number&gt;</span> <span class="menu-desc">Add a member to the group</span></li>
+                    <li><span class="menu-command">promote &lt;@user&gt;</span> <span class="menu-desc">Promote a member to admin</span></li>
+                    <li><span class="menu-command">demote &lt;@user&gt;</span> <span class="menu-desc">Demote an admin to a regular member</span></li>
+                    <li><span class="menu-command">clear chat/media</span> <span class="menu-desc">Clear messages in the group</span></li>
+                    <li><span class="menu-command">mute</span> <span class="menu-desc">Mute the group (only admins can send messages)</span></li>
+                    <li><span class="menu-command">unmute</span> <span class="menu-desc">Unmute the group (all members can send messages)</span></li>
+                    <li><span class="menu-command">kickall</span> <span class="menu-desc">Remove all non-admin members from the group</span></li>
+                    <li><span class="menu-command">announce &lt;interval&gt; &lt;message&gt;</span> <span class="menu-desc">Start announcements</span></li>
+                    <li><span class="menu-command">announce stop</span> <span class="menu-desc">Stop announcements</span></li>
+                    <li><span class="menu-command">group link</span> <span class="menu-desc">Get the group invite link</span></li>
+                    <li><span class="menu-command">group revoke</span> <span class="menu-desc">Revoke the group invite link</span></li>
+                    <li><span class="menu-command">leave</span> <span class="menu-desc">Leave the current group</span></li>
+                </ul>
+            </div>
+
+           <div class="menu-block">
+                <div class="menu-block-title">🛠️ UTILITY COMMANDS</div>
+                <ul class="menu-list">
+                    <li><span class="menu-command">delete</span> <span class="menu-desc">Delete a message sent by the bot</span></li>
+                    <li><span class="menu-command">view</span> <span class="menu-desc">Repost view-once media</span></li>
+                    <li><span class="menu-command">status on</span> <span class="menu-desc">Enable status viewing</span></li>
+                    <li><span class="menu-command">status off</span> <span class="menu-desc">Disable status viewing</span></li>
+                    <li><span class="menu-command">setname &lt;name&gt;</span> <span class="menu-desc">Update the bot's display name</span></li>
+                    <li><span class="menu-command">setprofilepic</span> <span class="menu-desc">Set the bot's profile picture</span></li>
+                    <li><span class="menu-command">setpic</span> <span class="menu-desc">Set the bot's profile picture</span></li>
+                    <li><span class="menu-command">setstatus &lt;status&gt;</span> <span class="menu-desc">Update the bot's "About Me" status</span></li>
+                    <li><span class="menu-command">presence &lt;type&gt;</span> <span class="menu-desc">Set the bot's presence (available, composing, recording, unavailable,)</span></li>
+                    <li><span class="menu-command">seen</span> <span class="menu-desc">Mark the chat as seen</span></li>
+                    <li><span class="menu-command">antidelete chaton</span> <span class="menu-desc">Enable anti-delete for all chats</span></li>
+                    <li><span class="menu-command">antidelete chatoff</span> <span class="menu-desc">Disable anti-delete for all chats</span></li>
+                </ul>
+            </div>
+
+            <div class="menu-block">
+                <div class="menu-block-title">🛡️ PROTECTION COMMANDS</div>
+                <ul class="menu-list">
+                    <li><span class="menu-command">antilink on/off</span> <span class="menu-desc">Enable or disable Anti-Link for the group</span></li>
+                    <li><span class="menu-command">antilink warncount &lt;number&gt;</span> <span class="menu-desc">Set the warning count for Anti-Link</span></li>
+                    <li><span class="menu-command">antilink bypassadmin</span> <span class="menu-desc">Enable bypass for group admins</span></li>
+                    <li><span class="menu-command">antilink dbadmin</span> <span class="menu-desc">Disable bypass for group admins</span></li>
+                    <li><span class="menu-command">antilink bypass @user</span> <span class="menu-desc">Add a specific user to the bypass list</span></li>
+                    <li><span class="menu-command">antilink db @user</span> <span class="menu-desc">Remove a specific user from the bypass list</span></li>
+                    <li><span class="menu-command">antilink list</span> <span class="menu-desc">Display the current Anti-Link settings</span></li>
+                </ul>
+            </div>
+
+            <div class="menu-block">
+                <div class="menu-block-title">🌐 COMMUNITY & GROUP COMMANDS</div>
+                <ul class="menu-list">
+                    <li><span class="menu-command">create group &lt;name&gt;</span> <span class="menu-desc">Create a new group in the current community</span></li>
+                    <li><span class="menu-command">create NG &lt;name&gt;</span> <span class="menu-desc">Create a new group outside any community</span></li>
+                    <li><span class="menu-command">destroy group</span> <span class="menu-desc">Destroy the current group (remove all users and delete the group)</span></li>
+                    <li><span class="menu-command">admin</span> <span class="menu-desc">Tag all admins in the group</span></li>
+                </ul>
+            </div>
+
+            <div style="text-align:center; margin-top: 24px; color:#00aaff;">
+                <strong>🚀 Techitoon - Enhancing Your Chats! 🚀</strong>
+            </div>
+        </section>
+    </div>
+    <footer class="footer">
+    <div class="footer-content">
+        <h3>About Techitoon Bot</h3>
+        <p>
+            🤖 Techitoon Bot BMM is your all-in-one WhatsApp assistant for group control, automation, fun, and protection. 
+            Manage your community smarter and faster with ease.
+        </p>
+
+       <h2>📞 Contact</h2>
+        <p>Email: <a href="mailto:techitoon.ai@gmail.com">techitoon.ai@gmail.com</a></p>
+        <p>WhatsApp: +234 8026 977 793</p>
+
+        <h4>Quick Links</h4>
+        <ul>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+        <p style="margin-top:8px;">
+            See our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>.
+        </p>
+        <p class="copyright">
+            &copy; <span id="year"></span> Techitoon Team. All rights reserved.
+        </p>
+    </div>
+</footer>
+<script src="matrix.js"></script>
+</body>
+<script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</html>

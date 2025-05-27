@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login or Register</title>
+    <link rel="stylesheet" href="styles.css">
+    <canvas id="matrix"></canvas>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<script type="module">
+import { showHackerTransition } from './hacker-transition.js';
+
+// Intercept all <a> clicks (except for #, mailto, tel, or _blank)
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href]').forEach(link => {
+        const url = link.getAttribute('href');
+        if (
+            url.startsWith('#') ||
+            url.startsWith('mailto:') ||
+            url.startsWith('tel:') ||
+            link.target === '_blank'
+        ) return;
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            showHackerTransition(url);
+        });
+    });
+});
+</script>
+<body>
+    <div id="hackerTransition" style="display:none;">
+      <canvas id="hackerTransitionCanvas"></canvas>
+    </div>
+    <div class="container">
+        <header>
+            <img src="./image/TECHITOON BOT_ Evolving Intelligence 2.png" alt="Techitoon Bot Logo" class="logo" style="max-width:180px;">
+            <h1>Welcome to Techitoon Bot</h1>
+            <h2>BMM - Beyond Machine Mind</h2>
+        </header>
+
+        <!-- Hero/About Section -->
+        <section class="hero-section" style="text-align:center; margin-bottom:32px;">
+            <img src="./image/TECHITOON BOT_ Evolving Intelligence 2.png" alt="BMM Beyond" style="max-width:320px; border-radius:18px; box-shadow:0 4px 24px #00aaff44; margin-bottom:18px;">
+            <h2 style="color:#ffd700; margin-bottom:10px;">Your All-in-One WhatsApp Assistant</h2>
+            <p style="font-size:1.15rem; color:#e0e0e0; margin-bottom:18px;">
+                <strong>Techitoon Bot BMM</strong> is your smart, secure, and fun WhatsApp group assistant.<br>
+                Automate tasks, protect your community, and enjoy advanced features powered by AI.<br>
+                <span style="color:#00aaff;">Smarter. Faster. Beyond.</span>
+            </p>
+            <div style="display:flex; flex-wrap:wrap; gap:18px; justify-content:center; margin-bottom:18px;">
+                <div style="background:#232346; border-radius:10px; padding:18px 22px; min-width:220px; box-shadow:0 2px 8px #00aaff22;">
+                    <img src="./image/b4.png" alt="Automation" style="width:60px; margin-bottom:10px;">
+                    <h3 style="color:#00aaff; margin-bottom:6px;">Automation</h3>
+                    <p style="font-size:1rem; color:#b0b8c9;">Auto-moderate, schedule, and manage groups with ease.</p>
+                </div>
+                <div style="background:#232346; border-radius:10px; padding:18px 22px; min-width:220px; box-shadow:0 2px 8px #00aaff22;">
+                    <img src="./image/TECHITOON BOT_ Evolving Intelligence 2.png" alt="AI Power" style="width:60px; margin-bottom:10px;">
+                    <h3 style="color:#ffd700; margin-bottom:6px;">AI Power</h3>
+                    <p style="font-size:1rem; color:#b0b8c9;">Smart replies, content filtering, and learning features.</p>
+                </div>
+                <div style="background:#232346; border-radius:10px; padding:18px 22px; min-width:220px; box-shadow:0 2px 8px #00aaff22;">
+                    <img src="./image/beyond.jpg" alt="Security" style="width:60px; margin-bottom:10px;">
+                    <h3 style="color:#dc3545; margin-bottom:6px;">Security</h3>
+                    <p style="font-size:1rem; color:#b0b8c9;">Anti-spam, anti-link, and advanced group protection.</p>
+                </div>
+            </div>
+            <p style="font-size:1.08rem; color:#ffd700; margin-bottom:0;">
+                <strong>Ready to get started?</strong>
+            </p>
+        </section>
+
+        <!-- Button Section -->
+        <section id="buttonSection" style="text-align:center;">
+            <button id="registerButton" class="btn-secondary">Register</button>
+            <button id="loginButton" class="btn-primary">Login</button>
+        </section>
+
+        <!-- Login Section -->
+        <section id="loginSection" class="form-section hidden">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+            <p id="loginResponseMessage" class="message"></p>
+            <p id="forgotPassword">
+                <a href="forgot-password.html">Forgot your password?</a>
+            </p>
+        </section>
+    </div>
+    <script src="index.js" type="module"></script>
+
+    <footer class="footer">
+    <div class="footer-content">
+        <h3>About Techitoon Bot</h3>
+        <p>
+            🤖 Techitoon Bot BMM is your all-in-one WhatsApp assistant for group control, automation, fun, and protection. 
+            Manage your community smarter and faster with ease.
+        </p>
+       <h2>📞 Contact</h2>
+        <p>Email: <a href="mailto:techitoon.ai@gmail.com">techitoon.ai@gmail.com</a></p>
+        <p>WhatsApp: +234 8026 977 793</p>
+        <h4>Quick Links</h4>
+        <ul>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+        <p style="margin-top:8px;">
+            See our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>.
+        </p>
+        <p class="copyright">
+            &copy; <span id="year"></span> Techitoon Team. All rights reserved.
+        </p>
+    </div>
+    </footer>
+    <script src="matrix.js"></script>
+</body>
+</html>

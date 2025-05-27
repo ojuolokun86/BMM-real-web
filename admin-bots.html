@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Bots</title>
+    <link rel="stylesheet" href="styles.css">
+    <canvas id="matrix"></canvas>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="./config.js" type="module"></script>
+</head>
+<script type="module">
+import { showHackerTransition } from './hacker-transition.js';
+
+// Intercept all <a> clicks (except for #, mailto, tel, or _blank)
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href]').forEach(link => {
+        const url = link.getAttribute('href');
+        if (
+            url.startsWith('#') ||
+            url.startsWith('mailto:') ||
+            url.startsWith('tel:') ||
+            link.target === '_blank'
+        ) return;
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            showHackerTransition(url);
+        });
+    });
+});
+</script>
+<body id="adminBotsPage">
+    <div id="hackerTransition" style="display:none;">
+  <canvas id="hackerTransitionCanvas"></canvas>
+</div>
+    <div class="container">
+        <header class="admin-header">
+                <div class="logo-title-group">
+                    <img src="./image/b5.png" alt="Logo" class="logo">
+                    <div class="title-group">
+                        <h1 class="main-title">BMM</h1>
+                        <h2 class="subtitle">TECHITOON BOT CONTROL</h2>
+                    </div>
+                </div>
+                <a href="admin.html" class="btn-secondary logout-btn">Back to Dashboard</a>
+            </header>
+        <table id="userBotsTable">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Phone Number</th>
+                    <th>Status</th>
+                    <th>RAM (MB)</th>
+                    <th>ROM (MB)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Bots will be dynamically added here -->
+            </tbody>
+        </table>
+        <section id="metricsSection">
+            <h2>All User Metrics</h2>
+            <div class="table-responsive">
+                <table id="metricsTable">
+                    <thead>
+                        <tr>
+                            <th>Auth ID</th>
+                            <th>Phone Number</th>
+                            <th>Message Processing Time (ms)</th>
+                            <th>Queue Processing Time (ms)</th>
+                            <th>Command Processing Time (ms)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Metrics will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    <script src="admin-bots.js" type="module"></script>
+    <script src="matrix.js"></script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <canvas id="matrix"></canvas>
+    <link rel="icon" href="data:,">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="./config.js" type="module"></script>
+</head>
+<script type="module">
+import { showHackerTransition } from './hacker-transition.js';
+
+// Intercept all <a> clicks (except for #, mailto, tel, or _blank)
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href]').forEach(link => {
+        const url = link.getAttribute('href');
+        if (
+            url.startsWith('#') ||
+            url.startsWith('mailto:') ||
+            url.startsWith('tel:') ||
+            link.target === '_blank'
+        ) return;
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            showHackerTransition(url);
+        });
+    });
+});
+</script>
+<body id="adminPage">
+    <div id="hackerTransition" style="display:none;">
+  <canvas id="hackerTransitionCanvas"></canvas>
+</div>
+    <div class="container">
+       <header class="admin-header">
+            <div class="logo-title-group">
+                <img src="./image/b5.png" alt="Logo" class="logo">
+                <div class="title-group">
+                    <h1 class="main-title">BMM</h1>
+                    <h2 class="subtitle">TECHITOON BOT CONTROL</h2>
+                </div>
+            </div>
+            <a href="index.html" class="btn-primary logout-btn">Logout</a>
+        </header>
+
+        <!-- Message Section -->
+        <section id="responseMessageSection" class="message-section">
+            <p id="responseMessage" class="message"></p>
+        </section>
+       <section id="adminNotificationSection">
+            <h2>Send Notification</h2>
+            <textarea id="notificationMessageInput" placeholder="Enter your notification message..."></textarea>
+            <button id="sendNotificationButton" class="btn-primary">Send Notification</button>
+        </section>
+
+        <section id="complaintsSection">
+             <h2>User Complaints</h2>
+             <ul id="complaintsList" class="scrollable-list">
+             <!-- Complaints will be dynamically added here -->
+             </ul>
+        </section>
+
+        <section id="tokenManagementSection">
+            <h2>Token Management</h2>
+            <form id="generateTokenForm">
+                <label for="authIdInputToken">Auth ID:</label>
+                <input type="text" id="authIdInputToken" placeholder="Enter Auth ID" required>
+                <div class="subscription-level-group">
+                    <label class="subscription-label">Subscription Level:</label>
+                    <div class="subscription-options">
+                        <label class="subscription-option basic">
+                            <input type="radio" name="subscriptionLevel" value="basic" checked>
+                            <span class="option-title">Basic</span>
+                            <span class="option-desc">Limited features</span>
+                        </label>
+                        <label class="subscription-option gold">
+                            <input type="radio" name="subscriptionLevel" value="gold">
+                            <span class="option-title">Gold</span>
+                            <span class="option-desc">More features</span>
+                        </label>
+                        <label class="subscription-option premium">
+                            <input type="radio" name="subscriptionLevel" value="premium">
+                            <span class="option-title">Premium</span>
+                            <span class="option-desc">All features</span>
+                        </label>
+                        <label class="subscription-option trier">
+                            <input type="radio" name="subscriptionLevel" value="trier">
+                            <span class="option-title">Trier</span>
+                            <span class="option-desc">1 week, 1 bot only</span>
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary">Generate Token</button>
+            </form>
+            <p id="generateTokenResponseMessage" class="message"></p>
+        </section>
+       <section class="user-list-section">
+            <h2>All Users</h2>
+
+            <table id="allBotsTable">
+                <thead>
+                    <tr>
+                    <th>Phone Number</th>
+                    <th>Status</th>
+                    <th>Server</th>
+                    <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="allBotsTableBody">
+                    <!-- Bots will be populated here -->
+                </tbody>
+                </table>
+            <table id="userTableMemory">
+            <thead>
+                <tr>
+                    <th>Phone Number</th>
+                    <th>Status</th>
+                    <th>RAM (MB)</th>
+                    <th>ROM (MB)</th>
+                    <th>Max RAM (MB)</th>
+                    <th>Max ROM (MB)</th>
+                    <th>Memory Usage</th>
+                    <th>Update Limits</th>
+                    <th>Auth ID</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+                <tbody>
+                    <!-- Users will be dynamically added here -->
+                </tbody>
+            </table>
+        </section>
+
+       <section id="sendUserNotificationSection">
+            <h2>Send Notification to a Specific User</h2>
+            <form id="sendUserNotificationForm">
+                <label for="authIdInput">Auth ID:</label>
+                <input type="text" id="authIdInputNotify" placeholder="Enter Auth ID" required>
+                <label for="messageInput">Message:</label>
+                <textarea id="messageInput" placeholder="Enter your message..." required></textarea>
+                <button type="submit" class="btn-primary">Send Notification</button>
+            </form>
+            <p id="sendNotificationResponseMessage" class="message"></p>
+        </section>
+
+        <section class="user-list-section">
+            <h2>All Users</h2>
+            <table id="userTableAuth">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Auth ID</th>
+                        <th>Subscription Level</th> <!-- Add this -->
+                        <th>Days Left</th> <!-- Add this -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Users will be dynamically added here -->
+                </tbody>
+            </table>
+        </section>
+        <section class="global-actions">
+            <button id="syncMemoryButton" class="btn-primary">Sync Memory to Supabase</button>
+        </section>
+
+        <section id="serverStatusSection">
+            <h2>Server Status</h2>
+            <table id="serverStatusTable">
+                <thead>
+                    <tr>
+                        <th>Server Name</th>
+                        <th>Status</th>
+                        <th>Load</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Server rows will be added here -->
+                </tbody>
+            </table>
+        </section>
+        <section class="global-actions">
+            <h2>Global Actions</h2>
+            <button id="viewAllBotsButton" class="btn-primary">View All Bots</button>
+        </section>
+
+        <section id="deleteUserSection">
+            <h2>Delete User Account</h2>
+           <input type="text" id="authIdInputDelete" placeholder="Enter Auth ID" />
+            <button id="deleteUserButton" class="btn-danger">Delete User</button>
+            <p id="deleteUserResponseMessage" class="message"></p>
+        </section>
+        <section class="global-actions">
+            <h2>Global Actions</h2>
+            <button id="deleteAllUsersButton" class="btn-danger">Delete All Users</button>
+            <p id="deleteResponseMessage" class="message"></p>
+        </section>
+
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal hidden">
+        <div class="modal-content">
+            <span id="modalMessage"></span>
+            <div style="text-align:center;margin-top:20px;">
+            <button id="confirmButton" class="btn-primary">Confirm</button>
+            <button id="cancelButton" class="btn-danger" style="margin-left:10px;">Cancel</button>
+            </div>
+        </div>
+        </div>
+    </div>
+    <script src="admin.js" type="module"></script>
+    <script src="matrix.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Techitoon Bot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <canvas id="matrix"></canvas>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<script type="module">
+import { showHackerTransition } from './hacker-transition.js';
+
+// Intercept all <a> clicks (except for #, mailto, tel, or _blank)
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href]').forEach(link => {
+        const url = link.getAttribute('href');
+        if (
+            url.startsWith('#') ||
+            url.startsWith('mailto:') ||
+            url.startsWith('tel:') ||
+            link.target === '_blank'
+        ) return;
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            showHackerTransition(url);
+        });
+    });
+});
+</script>
+<body>
+    <div id="hackerTransition" style="display:none;">
+  <canvas id="hackerTransitionCanvas"></canvas>
+</div>
+<div class="container">
+    <header>
+        <img src="./image/TECHITOON BOT_ Evolving Intelligence 2.png" alt="Logo" class="logo">
+        <h1>About Techitoon Bot</h1>
+    </header>
+    <section>
+        <h2>🤖 What is Techitoon Bot?</h2>
+        <p>
+            Techitoon Bot BMM is your all-in-one WhatsApp assistant for group control, automation, fun, and protection.
+            Manage your community smarter and faster with advanced features like group management, anti-link, memory limits, and more.
+        </p>
+        <h2>✨ Key Features</h2>
+        <ul>
+            <li>Multi-user, multi-instance WhatsApp bot</li>
+            <li>Admin dashboard for easy management</li>
+            <li>Subscription system with flexible plans</li>
+            <li>Advanced group and user controls</li>
+            <li>Fun commands, analytics, and more!</li>
+        </ul>
+        <h2>📞 Contact</h2>
+        <p>Email: <a href="mailto:techitoon.ai@gmail.com">techitoon.ai@gmail.com</a></p>
+        <p>WhatsApp: +234 8026 977 793</p>
+    </section>
+    <a id="backHomeLink" href="#" class="btn-primary" style="margin: 18px 0 0 0; display: inline-block;">← Back to Home</a>
+</div>
+<footer class="footer">
+    <div class="footer-content">
+        <h3>About Techitoon Bot</h3>
+        <p>
+            🤖 Techitoon Bot BMM is your all-in-one WhatsApp assistant for group control, automation, fun, and protection. 
+            Manage your community smarter and faster with ease.
+        </p>
+        <h4>Quick Links</h4>
+        <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+        <p style="margin-top:8px;">
+            See our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>.
+        </p>
+        <p class="copyright">
+            &copy; <span id="year"></span> Techitoon Team. All rights reserved.
+        </p>
+    </div>
+</footer>
+<script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script>
+    document.getElementById('backHomeLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        // Use 'auth_id' as your login/session key
+        if (localStorage.getItem('auth_id') || sessionStorage.getItem('auth_id')) {
+            window.location.href = 'dashboard.html';
+        } else {
+            window.location.href = 'index.html';
+        }
+    });
+</script>
+<script src="matrix.js"></script>
+</body>
+</html>

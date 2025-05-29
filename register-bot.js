@@ -1,7 +1,8 @@
 import { API_BASE_URL, SOCKET_BASE_URL, createSocket } from "./config.js";
 import { parsePhoneNumberFromString } from 'https://esm.sh/libphonenumber-js@1.10.24';
 
-
+let lastFormattedNumber = null;
+let lastAuthId = null;
 
 const socket = createSocket();
 console.log('🔗 Connected to WebSocket server'); // Debug log
@@ -106,6 +107,9 @@ registerForm.addEventListener('submit', async (e) => {
     const authId = localStorage.getItem('auth_id'); // Retrieve auth_id from local storage
     console.log('🔍 Retrieved auth_id from local storage:', authId);
     socket.emit('authId', authId);
+
+    lastFormattedNumber = formattedNumber;
+    lastAuthId = authId;
 
     if (!authId) {
         console.error('❌ Auth ID is missing. Please log in again.');
@@ -212,15 +216,26 @@ const sendNotification = async (message, authId) => {
 
 socket.on('qr', (data) => {
     if (data && data.pairingCode) {
-        qrCodeContainer.innerHTML = `
+       qrCodeContainer.innerHTML = `
             <div class="pairing-code-box">
                 <h3>WhatsApp Pairing Code</h3>
-                <div class="pairing-code">${data.pairingCode}</div>
-                <p>Enter this code in WhatsApp to link your device.</p>
+                <div class="pairing-code" id="pairingCode">${data.pairingCode}</div>
+                <p>
+                    1. Open WhatsApp on your phone.<br>
+                    2. Tap <b>Menu</b> (or <b>Settings</b>) &gt; <b>Linked Devices</b>.<br>
+                    3. Tap <b>Link a device</b>.<br>
+                    4. Enter this code: <span id="pairingCodeValue">${data.pairingCode}</span>
+                </p>
+                <button id="requestNewCodeBtn" class="btn-primary">Request New Code</button>
             </div>
         `;
         registerResponseMessage.textContent = '🔑 Enter this code in WhatsApp!';
-    } else if (data && data.qr) {
+       document.getElementById('requestNewCodeBtn').onclick = async () => {
+        registerResponseMessage.textContent = '⏳ Requesting new code...';
+        socket.emit('request-new-code', { phoneNumber: lastFormattedNumber, authId: lastAuthId });
+    };
+    }
+     else if (data && data.qr) {
         // fallback: show QR if pairing code not present
         let qrImg = document.getElementById('qrImage');
         if (!qrImg) {

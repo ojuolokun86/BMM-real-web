@@ -1,6 +1,5 @@
 import { API_BASE_URL, SOCKET_BASE_URL, createSocket } from './config.js';
 
-
 const socket = createSocket();
 console.log('🔗 Connected to WebSocket:', SOCKET_BASE_URL);
 
@@ -35,7 +34,6 @@ const fetchAllBots = async () => {
 // Fetch bots on page load
 fetchAllBots();
 
-// Function to update the metrics table dynamically
 // Function to update the metrics table dynamically
 const updateMetricsTable = (metricsArray) => {
     const metricsTableBody = document.getElementById('metricsTable').querySelector('tbody');

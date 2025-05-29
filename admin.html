@@ -97,21 +97,24 @@ document.addEventListener('DOMContentLoaded', () => {
             </form>
             <p id="generateTokenResponseMessage" class="message"></p>
         </section>
-       <section class="user-list-section">
-            <h2>All Users</h2>
-
-            <table id="allBotsTable">
-                <thead>
-                    <tr>
-                    <th>Phone Number</th>
-                    <th>Status</th>
-                    <th>Server</th>
-                    <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="allBotsTableBody">
-                    <!-- Bots will be populated here -->
-                </tbody>
+      <section class="user-list-section">
+    <h2>All Bots & Users</h2>
+    <table id="allBotsTable">
+        <thead>
+            <tr>
+                <th>Phone Number</th>
+                <th>Auth ID</th>
+                <th>Status</th>
+                <th>RAM (MB)</th>
+                <th>ROM (MB)</th>
+                <th>Total Memory (MB)</th>
+                <th>Server</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="allBotsTableBody">
+            <!-- Bots will be populated here -->
+        </tbody>
                 </table>
             <table id="userTableMemory">
             <thead>

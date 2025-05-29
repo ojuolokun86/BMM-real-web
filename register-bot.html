@@ -50,6 +50,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         <label for="country">Country:</label>
                         <select id="country" name="country" required></select>
                     </div>
+
+                    <!-- Add inside your <form id="registerForm"> -->
+                        <div class="form-group">
+                        <label>Pairing Method:</label>
+                        <label>
+                            <input type="radio" name="pairingMethod" value="pairingCode" checked>
+                            Pairing Code
+                        </label>
+                        <label>
+                            <input type="radio" name="pairingMethod" value="qrCode">
+                            QR Code
+                        </label>
+                        </div>
                     <div class="form-group">
                         <label for="phoneNumber">Phone Number:</label>
                         <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter your phone number" required>

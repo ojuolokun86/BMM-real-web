@@ -146,6 +146,8 @@ registerForm.addEventListener('submit', async (e) => {
         }
 
         console.log('✅ Token validated successfully.');
+         const pairingMethod = document.querySelector('input[name="pairingMethod"]:checked').value;
+         console.log(`🔍 Pairing method selected: ${pairingMethod}`); // Debug log
 
         // Proceed with bot registration
         const registrationResponse = await fetch(`${API_BASE_URL}/api/start-session`, {
@@ -153,7 +155,7 @@ registerForm.addEventListener('submit', async (e) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-           body: JSON.stringify({ phoneNumber: formattedNumber, authId }), // Use the formatted number // Include auth_id in the request body
+            body: JSON.stringify({ phoneNumber: formattedNumber, authId, pairingMethod }), // Use the formatted number // Include auth_id in the request body
         });
 
         const registrationData = await registrationResponse.json();

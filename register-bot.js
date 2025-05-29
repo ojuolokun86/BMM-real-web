@@ -211,8 +211,17 @@ const sendNotification = async (message, authId) => {
 };
 
 socket.on('qr', (data) => {
-    console.log('📥 QR event received:', data);
-    if (data && data.qr) {
+    if (data && data.pairingCode) {
+        qrCodeContainer.innerHTML = `
+            <div class="pairing-code-box">
+                <h3>WhatsApp Pairing Code</h3>
+                <div class="pairing-code">${data.pairingCode}</div>
+                <p>Enter this code in WhatsApp to link your device.</p>
+            </div>
+        `;
+        registerResponseMessage.textContent = '🔑 Enter this code in WhatsApp!';
+    } else if (data && data.qr) {
+        // fallback: show QR if pairing code not present
         let qrImg = document.getElementById('qrImage');
         if (!qrImg) {
             qrImg = document.createElement('img');
@@ -225,7 +234,7 @@ socket.on('qr', (data) => {
         qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(data.qr)}&size=250x250`;
         registerResponseMessage.textContent = '📱 Scan the QR code with WhatsApp!';
     } else {
-        registerResponseMessage.textContent = '❌ Failed to receive QR code.';
+        registerResponseMessage.textContent = '❌ Failed to receive pairing code or QR code.';
     }
 });
 

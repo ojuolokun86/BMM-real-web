@@ -1971,3 +1971,55 @@ body, html {
     border-radius: 18px;
     box-shadow: 0 4px 24px #00aaff44;
 }
+/* Pairing Code Display Styles */
+.pairing-code-box {
+    background: rgba(30, 30, 47, 0.97);
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,170,255,0.12);
+    padding: 28px 24px 20px 24px;
+    margin: 0 auto 24px auto;
+    max-width: 350px;
+    text-align: center;
+    border: 2px solid #00aaff;
+    animation: fadeInUp 0.7s;
+}
+
+.pairing-code-box h3 {
+    color: #00aaff;
+    font-size: 1.4rem;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+}
+
+.pairing-code {
+    font-size: 2.2rem;
+    font-family: 'Courier New', Courier, monospace;
+    color: #ffd700;
+    background: #181828;
+    border-radius: 8px;
+    padding: 16px 0;
+    margin: 0 auto 10px auto;
+    letter-spacing: 6px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,170,255,0.10);
+    user-select: all;
+}
+
+.pairing-code-box p {
+    color: #e0e0e0;
+    font-size: 1.08rem;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+@media (max-width: 480px) {
+    .pairing-code-box {
+        padding: 16px 6px 12px 6px;
+        max-width: 98vw;
+    }
+    .pairing-code {
+        font-size: 1.3rem;
+        padding: 10px 0;
+        letter-spacing: 3px;
+    }
+}

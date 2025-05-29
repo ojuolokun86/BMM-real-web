@@ -1,5 +1,5 @@
 //const URL = 'http://localhost:4001';
-const URL = 'https://load-manager.fly.dev'; 
+const URL = 'https://load-manager.fly.dev';
 console.log(`Connecting to LM at ${URL}/bot-server`);
 
 const API_BASE_URL = URL;

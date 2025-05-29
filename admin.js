@@ -252,6 +252,30 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'admin-bots.html';
     });
 
+    const userTableAuthBody = document.querySelector('#userTableAuth tbody');
+
+async function fetchAllUsers() {
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/admin/users-info`);
+        const { users } = await res.json();
+        userTableAuthBody.innerHTML = '';
+        users.forEach(user => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${user.email || 'N/A'}</td>
+                <td>${user.auth_id || 'N/A'}</td>
+                <td>${user.subscription_level || 'N/A'}</td>
+                <td>${user.days_left || 'N/A'}</td>
+            `;
+            userTableAuthBody.appendChild(row);
+        });
+    } catch (error) {
+        userTableAuthBody.innerHTML = `<tr><td colspan="4">❌ Error loading users</td></tr>`;
+    }
+}
+
+// Call this after DOMContentLoaded
+fetchAllUsers();
     // --- Initial Loads ---
     fetchAllBots();
     fetchServerStatus();

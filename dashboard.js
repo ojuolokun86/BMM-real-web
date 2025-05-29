@@ -202,9 +202,6 @@ const fetchBotInfo = async () => {
                 }
                 return;
             }
-            if (bot.status !== 'Active') {
-                row.innerHTML += `<button class="btn-primary" onclick="startBot('${bot.phoneNumber}', '${authId}')">Start</button>`;
-            }
             // Populate bot info table
             console.log('✅ Populating bot info table...');
            data.bots.forEach((bot) => {

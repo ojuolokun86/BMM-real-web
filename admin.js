@@ -274,6 +274,33 @@ async function fetchAllUsers() {
     }
 }
 
+const deleteAllUsersBtn = document.getElementById('deleteAllUsersButton');
+const deleteResponseMessage = document.getElementById('deleteResponseMessage');
+
+if (deleteAllUsersBtn) {
+    deleteAllUsersBtn.addEventListener('click', async () => {
+        if (!confirm('Are you sure you want to delete ALL users and bots? This cannot be undone.')) return;
+        deleteResponseMessage.textContent = '⏳ Deleting all users...';
+        deleteResponseMessage.className = 'message';
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/admin/users`, { method: 'DELETE' });
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                deleteResponseMessage.textContent = '✅ All users and bots deleted successfully.';
+                deleteResponseMessage.className = 'message success';
+            } else {
+                deleteResponseMessage.textContent = `❌ Failed to delete all users: ${data.message || 'Unknown error.'}`;
+                deleteResponseMessage.className = 'message error';
+            }
+        } catch (error) {
+            deleteResponseMessage.textContent = `❌ Error deleting all users: ${error.message}`;
+            deleteResponseMessage.className = 'message error';
+        }
+    });
+}
+
 // Call this after DOMContentLoaded
 fetchAllUsers();
     // --- Initial Loads ---

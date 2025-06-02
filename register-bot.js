@@ -22,35 +22,78 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('auth_id', authId);
 });
 
-async function populateCountrySelect() {
-    const countrySelect = document.getElementById('country');
+async function populateCountryDropdown() {
+    const container = document.getElementById('countryDropdown');
+    const toggle = document.getElementById('dropdownToggle');
+    const searchInput = document.getElementById('countrySearch');
+    const list = document.getElementById('dropdownList');
+    const hiddenInput = document.getElementById('countryCode');
+
+    let countryItems = [];
+
     try {
         const response = await fetch('https://restcountries.com/v3.1/all');
         const countries = await response.json();
-        // Sort countries alphabetically
         countries.sort((a, b) => a.name.common.localeCompare(b.name.common));
-        countries.forEach(country => {
-            if (country.idd && country.idd.root && country.idd.suffixes && country.idd.suffixes.length > 0) {
-                const code = country.cca2; // ISO country code
-                const name = country.name.common;
-                const callingCode = country.idd.root + country.idd.suffixes[0];
-                const option = document.createElement('option');
-                option.value = code;
-                option.textContent = `${name} (${callingCode})`;
-                countrySelect.appendChild(option);
+
+        countryItems = countries.filter(country =>
+            country.idd && country.idd.root && country.idd.suffixes && country.idd.suffixes.length > 0
+        ).map(country => {
+            const code = country.cca2;
+            const name = country.name.common;
+            const callingCode = country.idd.root + country.idd.suffixes[0];
+            const flagUrl = country.flags.png;
+
+            const li = document.createElement('li');
+            li.innerHTML = `<img src="${flagUrl}" alt="${name}" width="24" height="16"> ${name} (${callingCode})`;
+            li.addEventListener('click', () => {
+                toggle.innerHTML = `<img src="${flagUrl}" alt="${name}" width="24" height="16"> ${name} (${callingCode})`;
+                list.classList.remove('show');
+                hiddenInput.value = code;
+                searchInput.value = '';  // Clear search
+                filterCountries('');  // Reset list
+            });
+            return { element: li, name: name.toLowerCase() };
+        });
+
+        // Add all countries
+        countryItems.forEach(item => list.appendChild(item.element));
+
+        // Filter countries
+        const filterCountries = (searchValue) => {
+            list.querySelectorAll('li:not(.search-box)').forEach(li => li.remove());
+            countryItems
+                .filter(item => item.name.includes(searchValue))
+                .forEach(item => list.appendChild(item.element));
+        };
+
+        searchInput.addEventListener('input', () => {
+            filterCountries(searchInput.value.toLowerCase());
+        });
+
+        toggle.addEventListener('click', () => {
+            list.classList.toggle('show');
+            if (list.classList.contains('show')) {
+                searchInput.focus();  // Focus on search when open
             }
         });
+
+        document.addEventListener('click', (e) => {
+            if (!container.contains(e.target)) list.classList.remove('show');
+        });
+
     } catch (err) {
         console.error('❌ Failed to load country list:', err);
     }
 }
 
-document.addEventListener('DOMContentLoaded', populateCountrySelect);
+
+document.addEventListener('DOMContentLoaded', populateCountryDropdown);
 
 const registerForm = document.getElementById('registerForm');
 const registerResponseMessage = document.getElementById('registerResponseMessage');
 const qrCodeContainer = document.getElementById('qrCodeContainer');
-const countrySelect = document.getElementById('country');
+const countrySelect = document.getElementById('countryCode');
 
 if (!registerForm) {
     console.error('❌ registerForm element not found in the DOM.');

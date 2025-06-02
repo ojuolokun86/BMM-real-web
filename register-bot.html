@@ -46,10 +46,20 @@ document.addEventListener('DOMContentLoaded', () => {
         <section class="form-section">
             <h2>Enter Phone Number</h2>
             <form id="registerForm">
-                <div class="form-group">
-                    <label for="country">Country:</label>
-                    <select id="country" name="country" required></select>
+                            <div class="form-group">
+                    <label for="countryDropdown">Country:</label>
+                    <div id="countryDropdown" class="custom-dropdown">
+                        <div id="dropdownToggle" class="dropdown-toggle">Select Country</div>
+                        <ul id="dropdownList" class="dropdown-list">
+                            <li class="search-box">
+                                <input type="text" id="countrySearch" placeholder="Search country..." />
+                            </li>
+                            <!-- Country list items will go here -->
+                        </ul>
+                    </div>
+                    <input type="hidden" id="countryCode" name="country" required>
                 </div>
+
                 <!-- Platform/Browser select removed -->
                 <div class="form-group">
                     <div class="form-group pairing-method-group">

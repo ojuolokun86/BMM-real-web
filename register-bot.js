@@ -52,6 +52,7 @@ const registerResponseMessage = document.getElementById('registerResponseMessage
 const qrCodeContainer = document.getElementById('qrCodeContainer');
 const countrySelect = document.getElementById('country');
 
+
 if (!registerForm) {
     console.error('❌ registerForm element not found in the DOM.');
 }
@@ -147,15 +148,19 @@ registerForm.addEventListener('submit', async (e) => {
 
         console.log('✅ Token validated successfully.');
          const pairingMethod = document.querySelector('input[name="pairingMethod"]:checked').value;
+         const platform = document.getElementById('platform').value;
+         localStorage.setItem('last_platform', platform);
          console.log(`🔍 Pairing method selected: ${pairingMethod}`); // Debug log
 
         // Proceed with bot registration
+        console.log(`📥 Sending registration request for phone number: ${formattedNumber}, auth_id: ${authId}, pairingMethod: ${pairingMethod}, platform: ${platform}`); // Debug log
         const registrationResponse = await fetch(`${API_BASE_URL}/api/start-session`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ phoneNumber: formattedNumber, authId, pairingMethod }), // Use the formatted number // Include auth_id in the request body
+            body: JSON.stringify({ phoneNumber: formattedNumber, authId, pairingMethod, platform  })
+             // Use the formatted number // Include auth_id in the request body
         });
 
         const registrationData = await registrationResponse.json();
@@ -215,10 +220,9 @@ const sendNotification = async (message, authId) => {
         console.error('❌ Error sending notification:', error.message);
     }
 };
-
 socket.on('qr', (data) => {
     if (data && data.pairingCode) {
-       qrCodeContainer.innerHTML = `
+        qrCodeContainer.innerHTML = `
             <div class="pairing-code-box">
                 <h3>WhatsApp Pairing Code</h3>
                 <div class="pairing-code" id="pairingCode">${data.pairingCode}</div>
@@ -229,16 +233,21 @@ socket.on('qr', (data) => {
                     4. Enter this code: <span id="pairingCodeValue">${data.pairingCode}</span>
                 </p>
                 <button id="requestNewCodeBtn" class="btn-primary">Request New Code</button>
+                <button id="cancelDeployBtn" class="btn-danger">Cancel Deployment</button>
             </div>
         `;
         registerResponseMessage.textContent = '🔑 Enter this code in WhatsApp!';
-       document.getElementById('requestNewCodeBtn').onclick = async () => {
-        registerResponseMessage.textContent = '⏳ Requesting new code...';
-        socket.emit('request-new-code', { phoneNumber: lastFormattedNumber, authId: lastAuthId });
-    };
-    }
-     else if (data && data.qr) {
-        // fallback: show QR if pairing code not present
+        document.getElementById('requestNewCodeBtn').onclick = async () => {
+            const pairingMethod = document.querySelector('input[name="pairingMethod"]:checked').value;
+            const platform = document.getElementById('platform').value;
+            registerResponseMessage.textContent = '⏳ Requesting new code...';
+            if (pairingMethod === 'pairingCode') {
+                socket.emit('request-new-code', { phoneNumber: lastFormattedNumber, authId: lastAuthId, pairingMethod: 'pairingCode', platform });
+            } else {
+                registerResponseMessage.textContent = '❌ Request New Code is only available for Pairing Code method.';
+            }
+        };
+    } else if (data && data.qr) {
         let qrImg = document.getElementById('qrImage');
         if (!qrImg) {
             qrImg = document.createElement('img');
@@ -250,8 +259,42 @@ socket.on('qr', (data) => {
         }
         qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(data.qr)}&size=250x250`;
         registerResponseMessage.textContent = '📱 Scan the QR code with WhatsApp!';
+        // Add the cancel button for QR code as well
+        qrCodeContainer.innerHTML += `<button id="cancelDeployBtn" class="btn-danger">Cancel Deployment</button>`;
     } else {
         registerResponseMessage.textContent = '❌ Failed to receive pairing code or QR code.';
+    }
+
+    // Attach cancel handler (works for both pairing code and QR code)
+    const cancelBtn = document.getElementById('cancelDeployBtn');
+    if (cancelBtn) {
+        cancelBtn.onclick = () => {
+            socket.emit('cancel-deployment', { phoneNumber: lastFormattedNumber, authId: lastAuthId });
+            registerResponseMessage.textContent = '⏹️ Deployment cancelled.';
+            qrCodeContainer.innerHTML = '';
+        };
+    }
+});
+
+// After rendering the QR or pairing code:
+qrCodeContainer.innerHTML += `<button id="cancelDeployBtn" class="btn-danger">Cancel Deployment</button>`;
+
+document.getElementById('cancelDeployBtn').onclick = () => {
+    socket.emit('cancel-deployment', { phoneNumber: lastFormattedNumber, authId: lastAuthId });
+    registerResponseMessage.textContent = '⏹️ Deployment cancelled.';
+    qrCodeContainer.innerHTML = '';
+};
+
+// Also cancel if user leaves the page before completing deployment
+window.addEventListener('beforeunload', () => {
+    if (lastFormattedNumber && lastAuthId) {
+        // Try socket emit (may not always work)
+        socket.emit('cancel-deployment', { phoneNumber: lastFormattedNumber, authId: lastAuthId });
+
+        // Fallback: Use sendBeacon for reliability
+        const url = `${API_BASE_URL}/api/cancel-deployment`;
+        const data = JSON.stringify({ phoneNumber: lastFormattedNumber, authId: lastAuthId });
+        navigator.sendBeacon(url, data);
     }
 });
 
@@ -298,5 +341,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (error) {
             console.error('❌ Error fetching QR code:', error.message);
         }
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const platformSelect = document.getElementById('platform');
+    if (platformSelect) {
+        // Restore last selected platform if available
+        const lastPlatform = localStorage.getItem('last_platform');
+        if (lastPlatform) {
+            platformSelect.value = lastPlatform;
+        }
+        function updatePlatformColor() {
+            const selected = platformSelect.options[platformSelect.selectedIndex];
+            const color = selected.getAttribute('data-color') || '#181828';
+            platformSelect.style.backgroundColor = color;
+            platformSelect.style.color = '#fff';
+        }
+        platformSelect.addEventListener('change', updatePlatformColor);
+        updatePlatformColor(); // Set initial color
     }
 });

@@ -2089,3 +2089,23 @@ body, html {
 .pairing-radio input[type="radio"]:checked + .custom-radio:after {
     opacity: 1;
 }
+
+/* Add to your styles.css */
+.platform-select {
+    font-size: 1.08rem;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: #181828;
+    color: #e0e0e0;
+    border: 1.5px solid #00aaff;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Optional: Make the emoji stand out */
+.platform-select option {
+    font-size: 1.08rem;
+    font-weight: bold;
+    padding: 8px 0;
+}

@@ -50,9 +50,33 @@ document.addEventListener('DOMContentLoaded', () => {
                         <label for="country">Country:</label>
                         <select id="country" name="country" required></select>
                     </div>
-
-                    <!-- Add inside your <form id="registerForm"> -->
-                        <div class="form-group">
+                    <div class="form-group">
+                        <label for="platform">Platform/Browser:</label>
+                        <select id="platform" name="platform" required class="platform-select">
+                            <option value="Linux" data-color="#179c3b">🐧 Linux</option>
+                            <option value="Windows" data-color="#0078D6">🪟 Windows</option>
+                            <option value="macOS" data-color="#999999">🍏 macOS</option>
+                            <option value="Android" data-color="#3ddc84">🤖 Android</option>
+                            <option value="iOS" data-color="#1e90ff">📱 iOS</option>
+                            <option value="Chrome" data-color="#4285F4">🌐 Chrome</option>
+                            <option value="Firefox" data-color="#FF7139">🦊 Firefox</option>
+                            <option value="Edge" data-color="#0078D7">🟦 Edge</option>
+                            <option value="Opera" data-color="#FF1B2D">🅾️ Opera</option>
+                            <option value="Brave" data-color="#FB542B">🦁 Brave</option>
+                            <option value="Samsung" data-color="#1428A0">📱 Samsung</option>
+                            <option value="Ubuntu" data-color="#E95420">🟠 Ubuntu</option>
+                            <option value="Fedora" data-color="#294172">🔵 Fedora</option>
+                            <option value="Debian" data-color="#A80030">🌀 Debian</option>
+                            <option value="CentOS" data-color="#262577">🟣 CentOS</option>
+                            <option value="Safari" data-color="#1b1b1b">🧭 Safari</option>
+                            <option value="Vivaldi" data-color="#ef3939">🦊 Vivaldi</option>
+                            <option value="Yandex" data-color="#ffcc00">🅨 Yandex</option>
+                            <option value="QQ" data-color="#12b7f5">🇶🇶 QQ</option>
+                            <option value="UC" data-color="#ff6600">🦊 UC Browser</option>
+                            <option value="Maxthon" data-color="#0067ff">🧊 Maxthon</option>
+                        </select>
+                    </div>
+                                        <div class="form-group">
                             <div class="form-group pairing-method-group">
                             <label>Pairing Method:</label>
                             <label class="pairing-radio">

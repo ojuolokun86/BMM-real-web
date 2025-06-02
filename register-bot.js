@@ -52,7 +52,6 @@ const registerResponseMessage = document.getElementById('registerResponseMessage
 const qrCodeContainer = document.getElementById('qrCodeContainer');
 const countrySelect = document.getElementById('country');
 
-
 if (!registerForm) {
     console.error('❌ registerForm element not found in the DOM.');
 }
@@ -60,32 +59,32 @@ if (!registerForm) {
 registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-     const country = countrySelect.value; // ISO code, e.g. 'NG'
+    const country = countrySelect.value; // ISO code, e.g. 'NG'
     let phoneNumberInput = document.getElementById('phoneNumber').value.trim();
     registerResponseMessage.textContent = '';
     registerResponseMessage.classList.remove('error', 'success');
 
     // Normalize input: if it starts with country code but not +, add +
-   if (!phoneNumberInput.startsWith('+')) {
-    try {
-        const phoneObj = parsePhoneNumberFromString(phoneNumberInput, country);
-        console.log(`📞 Parsed phone number:`, phoneObj); // Debug log
-        if (!phoneObj || !phoneObj.isValid()) {
-            throw new Error('Invalid');
+    if (!phoneNumberInput.startsWith('+')) {
+        try {
+            const phoneObj = parsePhoneNumberFromString(phoneNumberInput, country);
+            console.log(`📞 Parsed phone number:`, phoneObj); // Debug log
+            if (!phoneObj || !phoneObj.isValid()) {
+                throw new Error('Invalid');
+            }
+            phoneNumberInput = phoneObj.number;
+        } catch (e) {
+            registerResponseMessage.textContent = '❌ Invalid phone number format.';
+            registerResponseMessage.classList.add('error');
+            return;
         }
-        phoneNumberInput = phoneObj.number;
-    } catch (e) {
-        registerResponseMessage.textContent = '❌ Invalid phone number format.';
-        registerResponseMessage.classList.add('error');
-        return;
     }
-}
 
     let phoneNumber;
     try {
         // If input starts with +, country is optional
         if (phoneNumberInput.startsWith('+')) {
-           phoneNumber = parsePhoneNumberFromString(phoneNumberInput);
+            phoneNumber = parsePhoneNumberFromString(phoneNumberInput);
         } else {
             phoneNumber = parsePhoneNumberFromString(phoneNumberInput, country);
         }
@@ -147,38 +146,35 @@ registerForm.addEventListener('submit', async (e) => {
         }
 
         console.log('✅ Token validated successfully.');
-         const pairingMethod = document.querySelector('input[name="pairingMethod"]:checked').value;
-         const platform = document.getElementById('platform').value;
-         localStorage.setItem('last_platform', platform);
-         console.log(`🔍 Pairing method selected: ${pairingMethod}`); // Debug log
+        const pairingMethod = document.querySelector('input[name="pairingMethod"]:checked').value;
+        console.log(`🔍 Pairing method selected: ${pairingMethod}`); // Debug log
 
         // Proceed with bot registration
-        console.log(`📥 Sending registration request for phone number: ${formattedNumber}, auth_id: ${authId}, pairingMethod: ${pairingMethod}, platform: ${platform}`); // Debug log
+        console.log(`📥 Sending registration request for phone number: ${formattedNumber}, auth_id: ${authId}, pairingMethod: ${pairingMethod}`); // Debug log
         const registrationResponse = await fetch(`${API_BASE_URL}/api/start-session`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ phoneNumber: formattedNumber, authId, pairingMethod, platform  })
-             // Use the formatted number // Include auth_id in the request body
+            body: JSON.stringify({ phoneNumber: formattedNumber, authId, pairingMethod })
         });
 
         const registrationData = await registrationResponse.json();
 
-       if (registrationResponse.ok) {
+        if (registrationResponse.ok) {
             console.log('✅ Bot registered successfully:', registrationData);
             registerResponseMessage.textContent = '✅ Bot registered successfully! Waiting for QR code...';
             registerResponseMessage.classList.add('success');
         } else {
             // Prefer 'error' field, fallback to 'message'
-                const errorMsg =
-                    registrationData.error ||
-                    registrationData.details || // <-- add this line
-                    registrationData.message ||
-                    'Unknown error';
-                console.error(`❌ Bot registration failed: ${errorMsg}`);
-                registerResponseMessage.textContent = `❌ ${errorMsg}`;
-                registerResponseMessage.classList.add('error');
+            const errorMsg =
+                registrationData.error ||
+                registrationData.details ||
+                registrationData.message ||
+                'Unknown error';
+            console.error(`❌ Bot registration failed: ${errorMsg}`);
+            registerResponseMessage.textContent = `❌ ${errorMsg}`;
+            registerResponseMessage.classList.add('error');
 
             // Send notification to the user
             await sendNotification(
@@ -220,6 +216,7 @@ const sendNotification = async (message, authId) => {
         console.error('❌ Error sending notification:', error.message);
     }
 };
+
 socket.on('qr', (data) => {
     if (data && data.pairingCode) {
         qrCodeContainer.innerHTML = `
@@ -239,10 +236,9 @@ socket.on('qr', (data) => {
         registerResponseMessage.textContent = '🔑 Enter this code in WhatsApp!';
         document.getElementById('requestNewCodeBtn').onclick = async () => {
             const pairingMethod = document.querySelector('input[name="pairingMethod"]:checked').value;
-            const platform = document.getElementById('platform').value;
             registerResponseMessage.textContent = '⏳ Requesting new code...';
             if (pairingMethod === 'pairingCode') {
-                socket.emit('request-new-code', { phoneNumber: lastFormattedNumber, authId: lastAuthId, pairingMethod: 'pairingCode', platform });
+                socket.emit('request-new-code', { phoneNumber: lastFormattedNumber, authId: lastAuthId, pairingMethod: 'pairingCode' });
             } else {
                 registerResponseMessage.textContent = '❌ Request New Code is only available for Pairing Code method.';
             }
@@ -321,7 +317,6 @@ socket.on('qr-clear', (data) => {
     // Clear the QR code container
     qrCodeContainer.innerHTML = '';
 });
-
 
 document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);

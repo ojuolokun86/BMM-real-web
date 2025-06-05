@@ -2211,3 +2211,38 @@ body, html {
     background-color: #2a2a3f;
 }
 
+/* Music Controls */
+#musicControls {
+  text-align: right;
+  margin: 10px 0 20px 0;
+}
+
+#musicControls button {
+  background: #23233b;
+  color: #ffd700;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 2px 8px #0002;
+}
+
+#musicControls button.btn-primary {
+  background: #ffd700;
+  color: #23233b;
+  font-weight: bold;
+}
+
+#musicControls button.btn-secondary {
+  background: #23233b;
+  color: #ffd700;
+  border: 1px solid #ffd700;
+}
+
+#musicControls button:hover {
+  background: #181828;
+  color: #fffbe7;
+}

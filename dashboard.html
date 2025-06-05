@@ -8,11 +8,37 @@
     <canvas id="matrix"></canvas>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <audio id="globalMusicPlayer" style="display:none;"></audio>
+    
 </head>
 <script type="module">
 import { showHackerTransition } from './hacker-transition.js';
-import { askAndPlayMusic } from './music-player.js';
+import { askAndPlayMusic, pauseMusic, playMusic } from './music-player.js';
 askAndPlayMusic();
+
+const pauseBtn = document.getElementById('musicPauseBtn');
+const playBtn = document.getElementById('musicPlayBtn');
+
+if (pauseBtn && playBtn) {
+    pauseBtn.onclick = () => {
+        pauseMusic();
+        pauseBtn.style.display = 'none';
+        playBtn.style.display = '';
+    };
+    playBtn.onclick = () => {
+        playMusic();
+        playBtn.style.display = 'none';
+        pauseBtn.style.display = '';
+    };
+    // Set initial state
+    if (localStorage.getItem('musicPaused') === 'true') {
+        pauseBtn.style.display = 'none';
+        playBtn.style.display = '';
+    } else {
+        pauseBtn.style.display = '';
+        playBtn.style.display = 'none';
+    }
+}
 
 // Intercept all <a> clicks (except for #, mailto, tel, or _blank)
 document.addEventListener('DOMContentLoaded', () => {
@@ -44,6 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h1 class="main-title">BMM</h1>
                     <h2 class="subtitle">TECHITOON BOT</h2>
                 </div>
+
+                <!-- Add inside your dashboard.html and admin.html, e.g. after header -->
+        <div id="musicControls" style="text-align:right;margin:10px 0;">
+            <button id="musicPauseBtn" class="btn-secondary">Pause Music</button>
+            <button id="musicPlayBtn" class="btn-primary" style="display:none;">Play Music</button>
+        </div>
             </div>
             <a href="index.html" class="btn-primary logout-btn">Logout</a>
         </header>

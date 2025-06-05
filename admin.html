@@ -12,6 +12,8 @@
 </head>
 <script type="module">
 import { showHackerTransition } from './hacker-transition.js';
+import { askAndPlayMusic } from './music-player.js';
+askAndPlayMusic();
 
 // Intercept all <a> clicks (except for #, mailto, tel, or _blank)
 document.addEventListener('DOMContentLoaded', () => {

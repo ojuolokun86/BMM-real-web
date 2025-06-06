@@ -31,18 +31,36 @@ function getRandomIndex() {
 }
 
 function playSong(index, seek = 0) {
+    if (!musicFiles[index]) {
+        console.warn('🎵 Invalid song index:', index);
+        return;
+    }
+
     const audioEl = getAudioElement();
-    audioEl.src = musicFolder + musicFiles[index];
+    const fileName = musicFiles[index];
+    audioEl.src = musicFolder + fileName;
     audioEl.volume = 0.5;
     audioEl.currentTime = seek;
     audioEl.onended = playNextSong;
-    if (!isPaused) audioEl.play();
+
+    currentSongIndex = index;
+
+    if (!isPaused) {
+        audioEl.play()
+            .then(() => {
+                console.log(`🎵 Playing: ${fileName}`);
+            })
+            .catch(err => {
+                console.warn('🎵 Auto-play blocked:', err.message);
+            });
+    }
+
     saveState();
 }
 
 function playNextSong() {
-    currentSongIndex = (currentSongIndex + 1) % musicFiles.length;
-    playSong(currentSongIndex);
+    let nextIndex = (currentSongIndex + 1) % musicFiles.length;
+    playSong(nextIndex);
 }
 
 function saveState() {
@@ -50,7 +68,7 @@ function saveState() {
     localStorage.setItem('musicAllowed', 'yes');
     localStorage.setItem('musicPaused', isPaused ? 'true' : 'false');
     localStorage.setItem('musicIndex', currentSongIndex);
-    localStorage.setItem('musicSeek', audioEl.currentTime);
+    localStorage.setItem('musicSeek', audioEl.currentTime || 0);
 }
 
 export function askAndPlayMusic() {
@@ -58,14 +76,21 @@ export function askAndPlayMusic() {
     isPaused = localStorage.getItem('musicPaused') === 'true';
     currentSongIndex = parseInt(localStorage.getItem('musicIndex'), 10);
     let seek = parseFloat(localStorage.getItem('musicSeek')) || 0;
-    if (isNaN(currentSongIndex)) currentSongIndex = getRandomIndex();
+    if (isNaN(currentSongIndex) || !musicFiles[currentSongIndex]) {
+        currentSongIndex = getRandomIndex();
+    }
 
     if (allowed === 'yes') {
         playSong(currentSongIndex, seek);
-        if (isPaused) getAudioElement().pause();
+        if (isPaused) {
+            getAudioElement().play().then(() => {
+                getAudioElement().pause();
+            });
+        }
         return;
     }
-    // Show a simple modal/prompt
+
+    // Show permission modal
     const modal = document.createElement('div');
     modal.style.position = 'fixed';
     modal.style.top = 0;
@@ -88,32 +113,57 @@ export function askAndPlayMusic() {
     document.body.appendChild(modal);
 
     document.getElementById('musicYes').onclick = () => {
-        localStorage.setItem('musicAllowed', 'yes');
-        localStorage.setItem('musicPaused', 'false');
-        document.body.removeChild(modal);
-        isPaused = false;
         currentSongIndex = getRandomIndex();
-        playSong(currentSongIndex);
+        isPaused = false;
+
+        const audioEl = getAudioElement();
+        const fileName = musicFiles[currentSongIndex];
+        audioEl.src = musicFolder + fileName;
+        audioEl.volume = 0.5;
+        audioEl.currentTime = 0;
+        audioEl.onended = playNextSong;
+
+        audioEl.play().then(() => {
+            console.log(`🎵 Playing: ${fileName}`);
+            localStorage.setItem('musicAllowed', 'yes');
+            localStorage.setItem('musicPaused', 'false');
+            saveState();
+            document.body.removeChild(modal);
+        }).catch(err => {
+            console.error('🎵 Failed to play audio:', err.message);
+            document.body.removeChild(modal);
+        });
     };
+
     document.getElementById('musicNo').onclick = () => {
         localStorage.setItem('musicAllowed', 'no');
         document.body.removeChild(modal);
     };
 }
 
-// Pause and play controls
 export function pauseMusic() {
     getAudioElement().pause();
     isPaused = true;
     saveState();
 }
+
 export function playMusic() {
-    getAudioElement().play();
+    const audioEl = getAudioElement();
+    const file = audioEl.src.split('/').pop();
+    if (!file || !file.endsWith('.mp3')) {
+        // Fix if audio src is empty or invalid
+        currentSongIndex = getRandomIndex();
+        playSong(currentSongIndex);
+        return;
+    }
+
+    audioEl.play().catch(err => {
+        console.warn('🎵 Could not play:', err.message);
+    });
     isPaused = false;
     saveState();
 }
 
-// Save state on unload
 if (typeof window !== 'undefined') {
     window.addEventListener('beforeunload', saveState);
 }

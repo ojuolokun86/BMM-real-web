@@ -32,8 +32,19 @@ async function populateCountryDropdown() {
     let countryItems = [];
 
     try {
-        const response = await fetch('https://restcountries.com/v3.1/all');
-        const countries = await response.json();
+        // Try the API with the correct fields
+        let response = await fetch('https://restcountries.com/v3.1/all?fields=name,cca2,idd,flags');
+        let countries;
+        if (response.ok) {
+            countries = await response.json();
+        } else {
+            // Fallback to local file
+            response = await fetch('countries.json');
+            if (!response.ok) throw new Error('Both remote and local country list failed');
+            countries = await response.json();
+        }
+
+        if (!Array.isArray(countries)) throw new Error('Countries API did not return an array');
         countries.sort((a, b) => a.name.common.localeCompare(b.name.common));
 
         countryItems = countries.filter(country =>
@@ -50,16 +61,14 @@ async function populateCountryDropdown() {
                 toggle.innerHTML = `<img src="${flagUrl}" alt="${name}" width="24" height="16"> ${name} (${callingCode})`;
                 list.classList.remove('show');
                 hiddenInput.value = code;
-                searchInput.value = '';  // Clear search
-                filterCountries('');  // Reset list
+                searchInput.value = '';
+                filterCountries('');
             });
             return { element: li, name: name.toLowerCase() };
         });
 
-        // Add all countries
         countryItems.forEach(item => list.appendChild(item.element));
 
-        // Filter countries
         const filterCountries = (searchValue) => {
             list.querySelectorAll('li:not(.search-box)').forEach(li => li.remove());
             countryItems
@@ -74,7 +83,7 @@ async function populateCountryDropdown() {
         toggle.addEventListener('click', () => {
             list.classList.toggle('show');
             if (list.classList.contains('show')) {
-                searchInput.focus();  // Focus on search when open
+                searchInput.focus();
             }
         });
 

@@ -1,7 +1,5 @@
 import { API_BASE_URL, SOCKET_BASE_URL, createSocket } from "./config.js";
 
-console.log('API Base URL:', API_BASE_URL);
-console.log('Socket Base URL:', createSocket());
 
 // Connect to WebSocket
 const socket = createSocket();

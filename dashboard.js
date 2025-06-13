@@ -1,4 +1,5 @@
 import { API_BASE_URL, SOCKET_BASE_URL, createSocket } from './config.js';
+console.log('🔗 Connected to WebSocket server'); // Debug log
 
 // Wait for DOM to be ready before running any code
 document.addEventListener('DOMContentLoaded', () => {
@@ -104,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchBotInfo() {
         if (!authId) return;
         try {
+            console.log('📩Fetching bot info for authId:', authId);
             const response = await fetch(`${API_BASE_URL}/api/user/bot-info?authId=${authId}`);
             const data = await response.json();
             console.log('Bot info data:', data);
@@ -301,32 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Fetch performance trends
-    async function fetchPerformanceTrends() {
-        if (!authId) return;
-        try {
-            const response = await fetch(`${API_BASE_URL}/api/user/analytics?authId=${authId}`);
-            const data = await response.json();
-            console.log('Performance trends data:', data);
-            if (response.ok) {
-                const now = Date.now();
-                const fiveMinutesAgo = now - 5 * 60 * 1000;
-                const filteredLabels = [];
-                const filteredData = [];
-                data.analytics.labels.forEach((label, idx) => {
-                    const labelTime = new Date(label).getTime();
-                    if (labelTime >= fiveMinutesAgo) {
-                        filteredLabels.push(label);
-                        filteredData.push(data.analytics.commandProcessingTime[idx]);
-                    }
-                });
-                initializeChart({
-                    labels: filteredLabels,
-                    commandProcessingTime: filteredData
-                });
-            }
-        } catch {}
-    }
+  
 
     // Handle bot errors from socket
     socket.on('bot-error', (data) => {
@@ -343,6 +320,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
+      // Fetch performance trends
+    socket.on('analytics-update', (analytics) => {
+    console.log('Real-time analytics:', analytics);
+    // Clone arrays to avoid Chart.js mutation issues
+    initializeChart({
+        labels: [...analytics.labels],
+        commandProcessingTime: [...analytics.commandProcessingTime]
+    });
+});
 
     // Listen for notifications from admin
     socket.on('user-notification', (data) => {
@@ -471,7 +458,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial fetches
     fetchUserSummary();
     fetchBotInfo();
-    fetchPerformanceTrends();
     fetchActivityLog();
     fetchNotifications();
     fetchSubscriptionDetails();

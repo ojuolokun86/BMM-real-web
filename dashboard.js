@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (authId) {
         socket.emit('authId', authId);
     }
+    const userAuthIdDiv = document.getElementById('userAuthId');
+if (authId && userAuthIdDiv) {
+    userAuthIdDiv.textContent = `🔑 Authentication ID: ${authId}`;
+}
 
     // Format date/time
     function formatDateTime(dateString) {
@@ -81,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
 
     // Fetch user summary
     async function fetchUserSummary() {

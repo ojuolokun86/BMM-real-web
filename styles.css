@@ -16,6 +16,12 @@ body {
     justify-content: center;
 }
 
+.user-auth-id {
+    font-size: 0.95em;
+    color: #deec15;
+    margin-bottom: 10px;
+}
+
 /* Container */
 .container {
     max-width: 900px;

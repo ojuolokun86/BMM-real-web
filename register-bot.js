@@ -270,6 +270,7 @@ const sendNotification = async (message, authId) => {
 };
 
 socket.on('qr', (data) => {
+    console.log('📡 Received QR code data:', data); // Debug log
     if (data && data.pairingCode) {
         qrCodeContainer.innerHTML = `
             <div class="pairing-code-box">

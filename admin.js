@@ -12,15 +12,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const allBotsTableBody = document.getElementById('allBotsTableBody');
     const responseMessage = document.getElementById('responseMessage');
     const serverStatusTableBody = document.querySelector('#serverStatusTable tbody');
+    const userTableAuthBody = document.querySelector('#userTableAuth tbody');
+    let availableServers = [];
+
+    // --- Fetch Available Servers ---
+    async function fetchAvailableServers() {    
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/admin/servers`);
+        const data = await res.json();
+        console.log('Available servers response:', data);
+        if (res.ok && Array.isArray(data.servers)) {
+            availableServers = data.servers; // e.g. [{id: "railway", name: "Railway"}, ...]
+        } else {
+            availableServers = [];
+        }
+        console.log(`Available servers loaded: ${availableServers.length}`);
+    } catch (e) {
+        availableServers = [];
+    }
+}
 
     // --- Fetch and Render All Bots ---
     async function fetchAllBots() {
+        await fetchAvailableServers(); // Make sure servers are loaded before rendering bots
         try {
             const res = await fetch(`${API_BASE_URL}/api/admin/bots-status`);
             const { bots } = await res.json();
             allBotsTableBody.innerHTML = '';
             bots.forEach(bot => {
                 const row = document.createElement('tr');
+                // Build server options dynamically
+                let serverOptions = `<option value="">Switch Server</option>`;
+                availableServers.forEach(server => {
+                    serverOptions += `<option value="${server.id}"${bot.server === server.id ? ' selected' : ''}>${server.name}</option>`;
+                });
                 row.innerHTML = `
                     <td>${bot.phoneNumber || 'N/A'}</td>
                     <td>${bot.authId || 'N/A'}</td>
@@ -34,11 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button class="btn-danger" onclick="stopBot('${bot.phoneNumber}')">Stop</button>
                         <button class="btn-primary" onclick="startBot('${bot.phoneNumber}','${bot.authId}')">Start</button>
                         <button class="btn-danger" onclick="deleteUser('${bot.phoneNumber}')">Delete</button>
-                        <select onchange="switchServer('${bot.phoneNumber}', this.value)">
-                            <option value="">Switch Server</option>
-                            <option value="railway">Railway</option>
-                            <option value="render">Render</option>
-                            <option value="flyio">Fly.io</option>
+                        <select class="switch-server-select" onchange="switchServer('${bot.phoneNumber}', this.value)">
+                            ${serverOptions}
                         </select>
                     </td>
                 `;
@@ -252,61 +274,87 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'admin-bots.html';
     });
 
-    const userTableAuthBody = document.querySelector('#userTableAuth tbody');
-
-async function fetchAllUsers() {
-    try {
-        const res = await fetch(`${API_BASE_URL}/api/admin/users-info`);
-        const { users } = await res.json();
-        userTableAuthBody.innerHTML = '';
-        users.forEach(user => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${user.email || 'N/A'}</td>
-                <td>${user.auth_id || 'N/A'}</td>
-                <td>${user.subscription_level || 'N/A'}</td>
-                <td>${user.days_left || 'N/A'}</td>
-            `;
-            userTableAuthBody.appendChild(row);
-        });
-    } catch (error) {
-        userTableAuthBody.innerHTML = `<tr><td colspan="4">❌ Error loading users</td></tr>`;
-    }
-}
-
-const deleteAllUsersBtn = document.getElementById('deleteAllUsersButton');
-const deleteResponseMessage = document.getElementById('deleteResponseMessage');
-
-if (deleteAllUsersBtn) {
-    deleteAllUsersBtn.addEventListener('click', async () => {
-        if (!confirm('Are you sure you want to delete ALL users and bots? This cannot be undone.')) return;
-        deleteResponseMessage.textContent = '⏳ Deleting all users...';
-        deleteResponseMessage.className = 'message';
-
+    // --- Fetch and Render All Users ---
+    async function fetchAllUsers() {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/admin/users`, { method: 'DELETE' });
-            const data = await response.json();
+            const res = await fetch(`${API_BASE_URL}/api/admin/users-info`);
+            const { users } = await res.json();
+            userTableAuthBody.innerHTML = '';
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.email || 'N/A'}</td>
+                    <td>${user.auth_id || 'N/A'}</td>
+                    <td>${user.subscription_level || 'N/A'}</td>
+                    <td>${user.days_left || 'N/A'}</td>
+                `;
+                userTableAuthBody.appendChild(row);
+            });
+        } catch (error) {
+            userTableAuthBody.innerHTML = `<tr><td colspan="4">❌ Error loading users</td></tr>`;
+        }
+    }
 
-            if (response.ok && data.success) {
-                deleteResponseMessage.textContent = '✅ All users and bots deleted successfully.';
-                deleteResponseMessage.className = 'message success';
-            } else {
-                deleteResponseMessage.textContent = `❌ Failed to delete all users: ${data.message || 'Unknown error.'}`;
+    // --- Delete All Users ---
+    const deleteAllUsersBtn = document.getElementById('deleteAllUsersButton');
+    const deleteResponseMessage = document.getElementById('deleteResponseMessage');
+
+    if (deleteAllUsersBtn) {
+        deleteAllUsersBtn.addEventListener('click', async () => {
+            if (!confirm('Are you sure you want to delete ALL users and bots? This cannot be undone.')) return;
+            deleteResponseMessage.textContent = '⏳ Deleting all users...';
+            deleteResponseMessage.className = 'message';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/users`, { method: 'DELETE' });
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    deleteResponseMessage.textContent = '✅ All users and bots deleted successfully.';
+                    deleteResponseMessage.className = 'message success';
+                } else {
+                    deleteResponseMessage.textContent = `❌ Failed to delete all users: ${data.message || 'Unknown error.'}`;
+                    deleteResponseMessage.className = 'message error';
+                }
+            } catch (error) {
+                deleteResponseMessage.textContent = `❌ Error deleting all users: ${error.message}`;
                 deleteResponseMessage.className = 'message error';
             }
-        } catch (error) {
-            deleteResponseMessage.textContent = `❌ Error deleting all users: ${error.message}`;
-            deleteResponseMessage.className = 'message error';
-        }
-    });
-}
+        });
+    }
 
-// Call this after DOMContentLoaded
-fetchAllUsers();
+    // --- User Search Functionality ---
+    const userSearchInput = document.getElementById('userSearchInput');
+    const userSearchBtn = document.getElementById('userSearchBtn');
+    const userTableAuth = document.getElementById('userTableAuth').getElementsByTagName('tbody')[0];
+
+    userSearchBtn.onclick = function() {
+        const searchValue = userSearchInput.value.trim().toLowerCase();
+        for (const row of userTableAuth.rows) {
+            const authIdCell = row.cells[1];
+            if (authIdCell && authIdCell.textContent.toLowerCase().includes(searchValue)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    };
+    userSearchInput.oninput = function() {
+        if (!userSearchInput.value) {
+            for (const row of userTableAuth.rows) {
+                row.style.display = '';
+            }
+        }
+    };
+
     // --- Initial Loads ---
+    fetchAllUsers();
     fetchAllBots();
     fetchServerStatus();
     fetchComplaints();
     setInterval(fetchServerStatus, 30000); // Poll server status every 30s
 });
+
+
+
 

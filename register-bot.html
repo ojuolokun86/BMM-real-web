@@ -13,28 +13,9 @@ import { showHackerTransition } from './hacker-transition.js';
 import { askAndPlayMusic } from './music-player.js';
 askAndPlayMusic();
 
-// Intercept all <a> clicks (except for #, mailto, tel, or _blank)
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('a[href]').forEach(link => {
-        const url = link.getAttribute('href');
-        if (
-            url.startsWith('#') ||
-            url.startsWith('mailto:') ||
-            url.startsWith('tel:') ||
-            link.target === '_blank'
-        ) return;
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            showHackerTransition(url);
-        });
-    });
-});
 </script>
-<body>
-    <div id="hackerTransition" style="display:none;">
-      <canvas id="hackerTransitionCanvas"></canvas>
-    </div>
-    <div class="container">
+<body>  
+         <div class="container"></div>
         <header class="dashboard-header">
             <div class="logo-title-group">
                 <img src="./image/TECHITOON BOT_ Evolving Intelligence 2.png" alt="Logo" class="logo">
@@ -90,31 +71,39 @@ document.addEventListener('DOMContentLoaded', () => {
         </section>
     </div>
     <script src="register-bot.js" type="module"></script>
-    <footer class="footer">
-        <div class="footer-content">
-            <h3>About Techitoon Bot</h3>
-            <p>
-                🤖 Techitoon Bot BMM is your all-in-one WhatsApp assistant for group control, automation, fun, and protection. 
-                Manage your community smarter and faster with ease.
-            </p>
-            <h2>📞 Contact</h2>
-            <p>Email: <a href="mailto:techitoon.ai@gmail.com">techitoon.ai@gmail.com</a></p>
-            <p>WhatsApp: +234 8026 977 793</p>
-            <h4>Quick Links</h4>
-            <ul>
-                <li><a href="terms.html">Terms of Service</a></li>
-                <li><a href="privacy.html">Privacy Policy</a></li>
-            </ul>
-            <p style="margin-top:8px;">
-                See our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>.
-            </p>
-            <p class="copyright">
-                &copy; <span id="year"></span> Techitoon Team. All rights reserved.
-            </p>
+  <!-- Example improved footer HTML for all pages -->
+<footer class="footer">
+    <div class="footer-glass-bg"></div>
+    <div class="footer-content">
+        <h3>About Techitoon Bot</h3>
+        <p>
+            🤖 Techitoon Bot BMM is your all-in-one WhatsApp assistant for group control, automation, fun, and protection.<br>
+            Manage your community smarter and faster with ease.
+        </p>
+        <div class="contact-links">
+            <a href="mailto:techitoon.ai@gmail.com" class="contact-link" title="Email">
+                <svg viewBox="0 0 24 24"><path d="M2 4h20v16H2V4zm2 2v12h16V6H4zm8 5.5L4.5 6.5l1.41-1.41L12 10.09l6.09-5L19.5 6.5 12 11.5z"/></svg>
+                techitoon.ai@gmail.com
+            </a>
+            <a href="https://wa.me/2348051891310" class="contact-link" target="_blank" title="WhatsApp">
+                <svg viewBox="0 0 24 24"><path d="M20.52 3.48A11.93 11.93 0 0 0 12 0C5.37 0 0 5.37 0 12c0 2.11.55 4.13 1.6 5.95L0 24l6.21-1.62A11.93 11.93 0 0 0 12 24c6.63 0 12-5.37 12-12 0-3.19-1.24-6.19-3.48-8.52zM12 22c-1.85 0-3.63-.5-5.18-1.44l-.37-.22-3.69.96.99-3.59-.24-.37A9.93 9.93 0 0 1 2 12c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10zm5.2-7.6c-.28-.14-1.65-.81-1.9-.9-.25-.09-.43-.14-.61.14-.18.28-.7.9-.86 1.08-.16.18-.32.2-.6.07-.28-.14-1.18-.44-2.25-1.4-.83-.74-1.39-1.65-1.56-1.93-.16-.28-.02-.43.12-.57.12-.12.28-.32.42-.48.14-.16.18-.28.28-.46.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.54-.45-.47-.61-.48-.16-.01-.34-.01-.52-.01-.18 0-.48.07-.73.34-.25.27-.97.95-.97 2.3 0 1.35.99 2.66 1.13 2.85.14.18 1.95 2.98 4.74 4.06.66.28 1.18.45 1.58.58.66.21 1.26.18 1.73.11.53-.08 1.65-.67 1.88-1.31.23-.64.23-1.19.16-1.31-.07-.12-.25-.18-.53-.32z"/></svg>
+                +234 8051 891 310
+            </a>
         </div>
-    </footer>
-    <script src="matrix.js"></script>
-</body>
+        <h4>Quick Links</h4>
+        <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+        <p style="margin-top:8px;">
+            See our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>.
+        </p>
+        <p class="copyright">
+            &copy; <span id="year"></span> Techitoon Team. All rights reserved.
+        </p>
+    </div>
+</footer>
 <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 </script>

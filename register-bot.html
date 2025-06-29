@@ -45,21 +45,25 @@ askAndPlayMusic();
                 </div>
 
                 <!-- Platform/Browser select removed -->
-                <div class="form-group">
-                    <div class="form-group pairing-method-group">
-                        <label>Pairing Method:</label>
-                        <label class="pairing-radio">
-                            <input type="radio" name="pairingMethod" value="pairingCode" checked>
-                            <span class="custom-radio"></span>
-                            Pairing Code
-                        </label>
-                        <label class="pairing-radio">
-                            <input type="radio" name="pairingMethod" value="qrCode">
-                            <span class="custom-radio"></span>
-                            QR Code
-                        </label>
-                    </div>
+              <div class="form-group pairing-method-group">
+                <label class="pairing-method-label">Pairing Method:</label>
+                <div class="pairing-method-options">
+                    <label class="pairing-method-card">
+                        <input type="radio" name="pairingMethod" value="pairingCode" checked>
+                        <span class="pairing-method-icon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" stroke="#3be8b0" stroke-width="2"/><text x="12" y="17" text-anchor="middle" fill="#3be8b0" font-size="13" font-family="monospace" font-weight="bold">123</text></svg>
+                        </span>
+                        <span class="pairing-method-title">Pairing Code</span>
+                    </label>
+                    <label class="pairing-method-card">
+                        <input type="radio" name="pairingMethod" value="qrCode">
+                        <span class="pairing-method-icon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" stroke="#6366f1" stroke-width="2"/><rect x="7" y="7" width="3" height="3" fill="#6366f1"/><rect x="14" y="7" width="3" height="3" fill="#6366f1"/><rect x="7" y="14" width="3" height="3" fill="#6366f1"/><rect x="14" y="14" width="3" height="3" fill="#6366f1"/></svg>
+                        </span>
+                        <span class="pairing-method-title">QR Code</span>
+                    </label>
                 </div>
+            </div>
                 <div class="form-group">
                     <label for="phoneNumber">Phone Number:</label>
                     <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter your phone number" required>

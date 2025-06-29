@@ -1299,3 +1299,171 @@ td { border-bottom: 1px solid #232946; }
     background: #232946;
     color: #3be8b0;
 }
+/* --- Pairing Card Styles --- */
+.pairing-card {
+    background: rgba(34, 41, 70, 0.98);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px #3be8b044, 0 1.5px 0 #3be8b0 inset;
+    padding: 32px 24px 24px 24px;
+    max-width: 370px;
+    margin: 32px auto 0 auto;
+    text-align: center;
+    position: relative;
+    animation: fadeInScale 0.5s;
+}
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.92);}
+    to { opacity: 1; transform: scale(1);}
+}
+.pairing-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.pairing-logo {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px #3be8b044;
+    background: #fff;
+}
+.pairing-code-glow {
+    margin: 18px 0;
+    padding: 18px 0;
+    background: linear-gradient(90deg, #3be8b0 30%, #6366f1 100%);
+    border-radius: 14px;
+    box-shadow: 0 0 24px #3be8b088, 0 2px 8px #6366f144;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.pairing-code-text {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 6px;
+    text-shadow: 0 2px 12px #3be8b0cc, 0 1px 0 #6366f1;
+    font-family: 'Fira Mono', 'Courier New', Courier, monospace;
+}
+.qr-code-glow {
+    margin: 18px 0;
+    padding: 18px 0;
+    background: linear-gradient(90deg, #6366f1 30%, #3be8b0 100%);
+    border-radius: 14px;
+    box-shadow: 0 0 24px #6366f188, 0 2px 8px #3be8b044;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.qr-img {
+    width: 220px;
+    height: 220px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 2px 12px #3be8b044;
+}
+.pairing-instructions {
+    margin: 18px 0 0 0;
+    text-align: left;
+}
+.pairing-instructions ol {
+    padding-left: 18px;
+    color: #b0b8c9;
+    font-size: 1.08rem;
+}
+.pairing-instructions li {
+    margin-bottom: 8px;
+}
+.pairing-actions {
+    margin-top: 18px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+@media (max-width: 600px) {
+    .pairing-card { padding: 12px 4px; max-width: 99vw; }
+    .pairing-logo { width: 32px; height: 32px; }
+    .pairing-code-text { font-size: 1.3rem; }
+    .qr-img { width: 120px; height: 120px; }
+}
+
+/* --- Pairing Method Card Style --- */
+.pairing-method-group {
+    margin-bottom: 22px;
+}
+.pairing-method-label {
+    font-weight: 700;
+    color: #6366f1;
+    margin-bottom: 10px;
+    display: block;
+    font-size: 1.12rem;
+}
+.pairing-method-options {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+}
+.pairing-method-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(34, 41, 70, 0.18);
+    border-radius: 14px;
+    padding: 18px 28px 14px 28px;
+    min-width: 120px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+    position: relative;
+    box-shadow: 0 2px 8px #3be8b022;
+    user-select: none;
+}
+.pairing-method-card input[type="radio"] {
+    display: none;
+}
+.pairing-method-icon {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pairing-method-title {
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: #b0b8c9;
+    letter-spacing: 1px;
+}
+.pairing-method-card input[type="radio"]:checked + .pairing-method-icon,
+.pairing-method-card input[type="radio"]:checked ~ .pairing-method-title {
+    color: #3be8b0;
+}
+.pairing-method-card input[type="radio"]:checked ~ .pairing-method-title {
+    color: #3be8b0;
+}
+.pairing-method-card input[type="radio"]:checked ~ .pairing-method-icon svg rect:first-child {
+    stroke: #ffd700;
+}
+.pairing-method-card input[type="radio"]:checked ~ .pairing-method-icon svg rect:not(:first-child) {
+    fill: #ffd700;
+}
+.pairing-method-card input[type="radio"]:checked ~ .pairing-method-title {
+    color: #ffd700;
+}
+.pairing-method-card:hover {
+    border: 2px solid #3be8b0;
+    background: rgba(59,232,176,0.08);
+}
+.pairing-method-card input[type="radio"]:checked ~ .pairing-method-title,
+.pairing-method-card input[type="radio"]:checked ~ .pairing-method-icon {
+    color: #ffd700;
+}
+.pairing-method-card input[type="radio"]:checked ~ .pairing-method-icon svg rect:first-child {
+    stroke: #ffd700;
+}
+@media (max-width: 600px) {
+    .pairing-method-options { gap: 8px; }
+    .pairing-method-card { min-width: 90px; padding: 10px 6px 8px 6px; }
+    .pairing-method-title { font-size: 0.98rem; }
+}

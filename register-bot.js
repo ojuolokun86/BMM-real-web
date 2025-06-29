@@ -273,19 +273,28 @@ socket.on('qr', (data) => {
     console.log('📡 Received QR code data:', data); // Debug log
     if (data && data.pairingCode) {
         qrCodeContainer.innerHTML = `
-            <div class="pairing-code-box">
-                <h3>WhatsApp Pairing Code</h3>
-                <div class="pairing-code" id="pairingCode">${data.pairingCode}</div>
-                <p>
-                    1. Open WhatsApp on your phone.<br>
-                    2. Tap <b>Menu</b> (or <b>Settings</b>) &gt; <b>Linked Devices</b>.<br>
-                    3. Tap <b>Link a device</b>.<br>
-                    4. Enter this code: <span id="pairingCodeValue">${data.pairingCode}</span>
-                </p>
-                <button id="requestNewCodeBtn" class="btn-primary">Request New Code</button>
-                <button id="cancelDeployBtn" class="btn-danger">Cancel Deployment</button>
-            </div>
-        `;
+    <div class="pairing-card">
+        <div class="pairing-header">
+            <img src="image/logo.jpg" alt="WhatsApp" class="pairing-logo">
+            <h3>WhatsApp Pairing Code</h3>
+        </div>
+        <div class="pairing-code-glow">
+            <span class="pairing-code-text" id="pairingCode">${data.pairingCode}</span>
+        </div>
+        <div class="pairing-instructions">
+            <ol>
+                <li>Open <b>WhatsApp</b> on your phone.</li>
+                <li>Tap <b>Menu</b> (or <b>Settings</b>) &gt; <b>Linked Devices</b>.</li>
+                <li>Tap <b>Link a device</b>.</li>
+                <li>Enter this code above.</li>
+            </ol>
+        </div>
+        <div class="pairing-actions">
+            <button id="requestNewCodeBtn" class="btn-primary">Request New Code</button>
+            <button id="cancelDeployBtn" class="btn-danger">Cancel Deployment</button>
+        </div>
+    </div>
+`;
         registerResponseMessage.textContent = '🔑 Enter this code in WhatsApp!';
         document.getElementById('requestNewCodeBtn').onclick = async () => {
             const pairingMethod = document.querySelector('input[name="pairingMethod"]:checked').value;

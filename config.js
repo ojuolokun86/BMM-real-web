@@ -12,7 +12,7 @@ export { API_BASE_URL, SOCKET_BASE_URL };
 export function createSocket() {
     return io(SOCKET_BASE_URL, {
         transports: ['polling', 'websocket'],
-        withCredentials: true,
+        withCredentials: true,//
         reconnection: true,
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
